@@ -8,13 +8,44 @@ format: html
 
 The term "Barbenheimer" began on social media before the simultaneous theatrical release of two blockbuster films, Barbie and Oppenheimer, on July 21, 2023. This question asks you to explore data on movies released in 2023, not just these two. The data was compiled from https://datasets.imdbws.com and is available for you in the file "movies_2023.rda". (For each of the plots in d, e, f mark where Barbie and Oppenheimer fall, just for fun, and extra discussion points.)
 
+```{r}
+library(tidyverse)
+
+load("data/movies_2023.rda")
+```
+
 a. How many movies and variables are in the data?
+
+```{r}
+glimpse(movies_2023)
+```
+There are `r nrow(movies_2023)` movies and `r ncol(movies_2023)` variables in the data.
+
 b. Think about your expectations. Write these down before you make any computations or plots of the data.
 - What genre keywords would you expect to be the most common? 
+
+I would expect Adventure and/or Drama to be the most common as movies of these categories are thought to be filmed abundantly especially at an independent level.
+
 - What would you expect the relationship between number of votes and ratings to be? 
+
+I expect a positive relationship between the number of votes and ratings since higher rated movies are considered as *good* movies. Logically, they should have more votes.
+
 - What do you think the relationship between genre keyword and ratings might be? (What genre would have the top rating and which would have the lowest?)
+
+I do not expect any strong relationship, or any relationship at all, between genre keyword and ratings since movies in any genres can be good. Moreover, since a movie may belong to many genres, it can be difficult to deduce a relationship as it may perhaps spoil the analysis.
+
 - Would you expect a relationship between run time and rating to be?
+
+I expect no strong relationship between run time and rating.
+
 c. Make a bar chart of the genre key words (`adventure` to `western`), and summarise the distribution.
+
+```{r}
+movies_c <- movies_2023 |>
+  
+```
+
+
 d. Plot the average rating by genre, in the best way that you can. Describe the distribution, and what you learn about ratings and genre.
 e. Plot ratings and number of votes, being careful as to which axis each should be plotted on. Summarise the distribution and what you learn.
 f. Make appropriate plots to explore the relationship of run time against ratings. 

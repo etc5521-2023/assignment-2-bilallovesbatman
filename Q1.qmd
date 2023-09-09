@@ -1,6 +1,6 @@
 ---
 title: "Q1"
-author: "YOUR NAME HERE"
+author: "BILAL RAJA"
 format: html
 ---
 
@@ -18,8 +18,51 @@ glimpse(v)
 ```
 
 a. How many variables in this data and what type are they?
+
+There are a total of 3 variables in this data. Their names and their types are listed below:
+
+- **Width**: double type variable
+- **Height**: double type variable
+- **Count**: double type variable
+
 b. Based on the description above, and the variables available in the data, posit two open-ended questions that might be interesting to answer with the data.
+
+- **Question 1**:
+
+- **Question 2**: 
+
 c. Create a bubble scatterplot, where size represents the count, with an `x=y` guideline underlying the points. Describe what you learn about viewport sizes from this plot.
+
+```{r}
+ggplot(v, aes(
+  x = Width,
+  y = Height,
+  size = Count
+)) +
+  geom_point() + 
+  geom_abline(intercept = 0, slope = 1, color = "steelblue", linetype = "solid") +
+  labs(x = "Viewport Width (pixels)", y = "Viewport Height (pixels)", size = "Count")
+```
+
+
 d. Make a transformation of the data to create a new variable, `aspect_ratio`, based on Width and Height, that will allow you to explain the sizes in one of the conventional terms eg 16:9. (Note: use width:height definition of aspect ratio.)
+
+```{r}
+library(FRACTION)
+
+v <- v |>
+  mutate(aspect_ratio = paste(Width / gcd(Width,Height), ":", Height / gcd(Width, Height)))
+```
+
+
 e. Show the aspect ratio as a density plot, where the x axis labels correspond to particular ratios, "1:3", "9:16", "1:1", "16:9", "3:1". (Note: Remember that the data is aggregated already, so that Count needs to the incorporated into computing the density. Setting the axis limits to between 0 and 4 is helpful, too.) Describe the distribution and explain what you learn.
+
+```{r}
+ggplot(v,
+       aes(x = aspect_ratio,
+           y = Count)) +
+  geom_density()
+```
+
+
 f. What is the most frequent aspect ratio? What (type of) device does this correspond to? (Note: You'll need to do some web searching.)
