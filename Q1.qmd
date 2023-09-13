@@ -17,7 +17,7 @@ v <- read_csv(here::here("data/viewports.csv"))
 glimpse(v)
 ```
 
-a. How many variables in this data and what type are they?
+## a. How many variables in this data and what type are they?
 
 There are a total of 3 variables in this data. Their names and their types are listed below:
 
@@ -25,13 +25,13 @@ There are a total of 3 variables in this data. Their names and their types are l
 - **Height**: double type variable
 - **Count**: double type variable
 
-b. Based on the description above, and the variables available in the data, posit two open-ended questions that might be interesting to answer with the data.
+## b. Based on the description above, and the variables available in the data, posit two open-ended questions that might be interesting to answer with the data.
 
-- **Question 1**:
+- **Question 1**: Is there any relationship between the Width and the Height of the screens?
 
-- **Question 2**: 
+- **Question 2**: What does the data tell us about the screen sizes in the USA and Europe?
 
-c. Create a bubble scatterplot, where size represents the count, with an `x=y` guideline underlying the points. Describe what you learn about viewport sizes from this plot.
+## c. Create a bubble scatterplot, where size represents the count, with an `x=y` guideline underlying the points. Describe what you learn about viewport sizes from this plot.
 
 ```{r}
 ggplot(v, aes(
@@ -40,27 +40,55 @@ ggplot(v, aes(
   size = Count
 )) +
   geom_point() + 
-  geom_abline(intercept = 0, slope = 1, color = "steelblue")
+  labs(x = "Screen Width",
+       y = "Screen Size") + 
+  geom_abline(intercept = 0, slope = 1, color = "steelblue") +
+  theme_classic()
 ```
 
+There seems to be a positive relationship linear between the width and height sizes, albeit not a very strong one. Moreover, it is observed from our sample that there are not many devices that have widths of greater than 4000. However, there is an outlier in our data where a device has a height in negatives which cannot be possible. For the sake of exploration and analysis, I have kept it in to point it out.
 
-d. Make a transformation of the data to create a new variable, `aspect_ratio`, based on Width and Height, that will allow you to explain the sizes in one of the conventional terms eg 16:9. (Note: use width:height definition of aspect ratio.)
+## d. Make a transformation of the data to create a new variable, `aspect_ratio`, based on Width and Height, that will allow you to explain the sizes in one of the conventional terms eg 16:9. (Note: use width:height definition of aspect ratio.)
 
 ```{r}
-library(FRACTION)
-
 v <- v |>
-  mutate(aspect_ratio = paste(Width / gcd(Width,Height), ":", Height / gcd(Width, Height)))
+  mutate(aspect_ratio = Width / Height)
+
+glimpse(v)
 ```
 
 
-e. Show the aspect ratio as a density plot, where the x axis labels correspond to particular ratios, "1:3", "9:16", "1:1", "16:9", "3:1". (Note: Remember that the data is aggregated already, so that Count needs to the incorporated into computing the density. Setting the axis limits to between 0 and 4 is helpful, too.) Describe the distribution and explain what you learn.
+## e. Show the aspect ratio as a density plot, where the x axis labels correspond to particular ratios, "1:3", "9:16", "1:1", "16:9", "3:1". (Note: Remember that the data is aggregated already, so that Count needs to the incorporated into computing the density. Setting the axis limits to between 0 and 4 is helpful, too.) Describe the distribution and explain what you learn.
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 ggplot(v,
        aes(x = aspect_ratio)) +
-  geom_density()
+  geom_density(fill = "purple", alpha = 0.5) +
+  scale_x_continuous(
+    breaks = c(1/3, 9/16, 1, 16/9, 3),
+    labels = c("1:3", "9:16", "1:1", "16:9", "3:1"),
+    limits = c(0,4)
+  ) +
+  labs(title = "Aspect Ratio Density Plot",
+       x = "Aspect Ratio",
+       y = "Density") +
+  theme_classic()
 ```
 
+The density plot that we have plotted is bimodal with 2 peaks at 9:16 and 16:9. There also seems to be a lot of variability or spread in the given sample as indicated by the density plot. Moreover, the most frequent aspect ratio shown by the density plot is the 9:16. Furthermore, it also shows that the data points are clustered the most around the 9:16 aspect ratio. In addition, the plot is skewed to the right and has a central tendency towards 9:16.
 
-f. What is the most frequent aspect ratio? What (type of) device does this correspond to? (Note: You'll need to do some web searching.)
+## f. What is the most frequent aspect ratio? What (type of) device does this correspond to? (Note: You'll need to do some web searching.)
+
+The most frequent aspect ratio is the 9:16. The type of devices that this aspect ratio corresponds to are the smart phones. Quoting Harmonie Duhamel from dacast, "A 9:16 aspect ratio is used for tall videos. This aspect ratio became the most popular aspect ratio when smartphones were created with video capabilities.
+
+For example, the optimal measure for an Instagram story is 1080 px by 1920 px, which means its ratio is 9:16. The same goes for other popular apps that have “story” features, including Facebook and Snapchat.
+
+This makes sense because the iPhone camera’s video setting can record footage in both 9:16 and 16:9." (Duhamel, 2023).
+
+## Reference List
+
+- Duhamel, H. (2023, May 2). The Complete Guide to understanding video aspect ratios. Dacast. https://www.dacast.com/blog/video-aspect-ratio/ 
+
+- Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM, Müller K, Ooms J,
+  Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019). “Welcome to the tidyverse.” _Journal of Open Source Software_, *4*(43),
+  1686. doi:10.21105/joss.01686 <https://doi.org/10.21105/joss.01686>.
