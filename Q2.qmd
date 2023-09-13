@@ -1,6 +1,6 @@
 ---
 title: "Q2"
-author: "YOUR NAME HERE"
+author: "BILAL RAJA"
 format: html
 ---
 
@@ -8,41 +8,40 @@ format: html
 
 The term "Barbenheimer" began on social media before the simultaneous theatrical release of two blockbuster films, Barbie and Oppenheimer, on July 21, 2023. This question asks you to explore data on movies released in 2023, not just these two. The data was compiled from https://datasets.imdbws.com and is available for you in the file "movies_2023.rda". (For each of the plots in d, e, f mark where Barbie and Oppenheimer fall, just for fun, and extra discussion points.)
 
-```{r}
+```{r, message = FALSE}
 library(tidyverse)
 
 load("data/movies_2023.rda")
 ```
 
-a. How many movies and variables are in the data?
+## a. How many movies and variables are in the data?
 
 ```{r}
 glimpse(movies_2023)
 ```
 There are `r nrow(movies_2023)` movies and `r ncol(movies_2023)` variables in the data.
 
-b. Think about your expectations. Write these down before you make any computations or plots of the data.
-- What genre keywords would you expect to be the most common? 
+## b. Think about your expectations. Write these down before you make any computations or plots of the data.
+
+## - What genre keywords would you expect to be the most common? 
 
 I would expect Adventure and/or Drama to be the most common as movies of these categories are thought to be filmed abundantly especially at an independent level.
 
-- What would you expect the relationship between number of votes and ratings to be? 
+## - What would you expect the relationship between number of votes and ratings to be? 
 
 I expect a positive relationship between the number of votes and ratings since higher rated movies are considered as *good* movies. Logically, they should have more votes.
 
-- What do you think the relationship between genre keyword and ratings might be? (What genre would have the top rating and which would have the lowest?)
+## - What do you think the relationship between genre keyword and ratings might be? (What genre would have the top rating and which would have the lowest?)
 
 I do not expect any strong relationship, or any relationship at all, between genre keyword and ratings since movies in any genres can be good. Moreover, since a movie may belong to many genres, it can be difficult to deduce a relationship as it may perhaps spoil the analysis.
 
-- Would you expect a relationship between run time and rating to be?
+## - Would you expect a relationship between run time and rating to be?
 
 I expect no strong relationship between run time and rating.
 
-c. Make a bar chart of the genre key words (`adventure` to `western`), and summarise the distribution.
+## c. Make a bar chart of the genre key words (`adventure` to `western`), and summarise the distribution.
 
 ```{r}
-library(ggplot2)
-
 genres_pivot <- movies_2023 |>
   pivot_longer(cols = adventure:western, names_to = "genres_long", values_to = "count") |>
   group_by(genres_long) |>
@@ -52,19 +51,27 @@ ggplot(genres_pivot, aes(
   x = genres_long,
   y = count
 )) +
-  geom_col(fill = "steelblue") +
+  geom_bar(stat = "identity", fill = "steelblue") +
   labs(
     title = "Genre Distribution of 2023 Movies",
     x = "Genre",
     y = "Count"
   ) +
+  theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
   
 ```
 
-**SUMMARIZE THE PLOT HERE**
+We observe a good amount of variability from the barplot where a bit of positive skewness may be observed, but this may just be because of the order we have placed the genres in (alphabetically). The selection of the order also contributes to the multimodality of the data where we see peaks in the following genres and no clear symmetry:
 
-d. Plot the average rating by genre, in the best way that you can. Describe the distribution, and what you learn about ratings and genre.
+- Action
+- Comedy
+- Drama
+- Thriller
+
+Among all the genres, the most movies released in 2023 belonged to the genre of *drama*.
+
+## d. Plot the average rating by genre, in the best way that you can. Describe the distribution, and what you learn about ratings and genre.
 
 ```{r}
 genre_avratings <- movies_2023 |>
@@ -74,7 +81,7 @@ genre_avratings <- movies_2023 |>
   summarise(avg_rating = round(mean(averageRating), 2))
 
 ggplot(genre_avratings, aes(
-  x = reorder(genres, -avg_rating),
+  x = genres,
   y = avg_rating
 )) +
   geom_col(fill = "steelblue") +
@@ -83,10 +90,82 @@ ggplot(genre_avratings, aes(
     x = "Genre",
     y = "Average Rating"
   ) +
+  theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-**SUMMARIZE THE PLOT HERE**
+The plot for Genres and Average Ratings exhibits uniformity in its distribution and thus, symmetry. There does not seem to be any dominant genre when it comes to average ratings. Hence, we can argue that there is no genre in particular that is dominantly better than the others or inferior than the others. Every genre may have had numerous similar rated movies resulting in no relationship between the variables.
 
-e. Plot ratings and number of votes, being careful as to which axis each should be plotted on. Summarise the distribution and what you learn.
-f. Make appropriate plots to explore the relationship of run time against ratings. 
+## e. Plot ratings and number of votes, being careful as to which axis each should be plotted on. Summarise the distribution and what you learn.
+
+```{r, message = FALSE}
+library(scales)
+
+ggplot(movies_2023, aes(
+  x = averageRating,
+  y = numVotes
+)) +
+  geom_point(color = "purple") +
+  labs(x = "Average Rating",
+       y = "Votes") +
+  scale_x_continuous(breaks = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)) +
+  scale_y_continuous(labels = comma, breaks = scales::pretty_breaks()) +
+  theme_classic()
+```
+
+There does not seem to be any immediate relationship between the average ratings of the movies with their number of votes. However, it may be argued that for the movies rated between 4 and 8, there might be a weak positive linear relationship. That said, we cannot conclude that there is an overall relationship between the average rating and votes of a movie. The data points that depict many votes between the average ratings of 4 to 8, they should be considered as outliers. The reason for such outliers could be due to the large interest for the particular movies.
+
+## f. Make appropriate plots to explore the relationship of run time against ratings. 
+
+```{r, message = FALSE, warning = FALSE}
+library(gridExtra)
+
+f_scatter <- ggplot(movies_2023, aes(
+  x = averageRating,
+  y = as.numeric(runtimeMinutes)
+)) +
+  geom_point(color = "purple") +
+  geom_smooth(method = "lm") +
+  labs(x = "Average Rating",
+       y = "Runtime (minutes)") +
+  ggtitle("Scatter: Movie Runtime vs Movie Ratings") +
+   scale_x_continuous(breaks = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)) +
+  theme_classic()
+
+ratings_bin <- c(0, 2, 4, 6, 8, 10)
+
+f_boxplot <- ggplot(movies_2023, aes(
+  x = cut(averageRating, breaks = ratings_bin),
+  y = as.numeric(runtimeMinutes)
+)) +
+  geom_boxplot(fill = "steelblue") +
+  labs(x = "Average Ratings",
+       y = "Runtime (minutes)") +
+  ggtitle("Boxplot: Movie Runtime vs Movie Ratings") +
+  theme_classic()
+
+f_violin <- ggplot(movies_2023, aes(
+  x = cut(averageRating, breaks = ratings_bin),
+  y = as.numeric(runtimeMinutes)
+)) +
+  geom_violin(fill = "darkgreen") +
+  labs(x = "Average Ratings",
+       y = "Runtime (minutes)") +
+  ggtitle("Violin: Movie Runtime vs Movie Ratings") +
+  theme_classic()
+
+grid.arrange(f_scatter, f_boxplot, f_violin, ncol = 2)
+
+```
+
+## Reference List
+
+- Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM, Müller K, Ooms J,
+  Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019). “Welcome to the tidyverse.” _Journal of Open Source Software_, *4*(43),
+  1686. doi:10.21105/joss.01686 <https://doi.org/10.21105/joss.01686>.
+
+-  Wickham H, Seidel D (2022). _scales: Scale Functions for Visualization_. R package version 1.2.1, <https://CRAN.R-project.org/package=scales>.
+
+-  Auguie B (2017). _gridExtra: Miscellaneous Functions for "Grid" Graphics_. R package version 2.3, <https://CRAN.R-project.org/package=gridExtra>.
+
+- Kuhn, M., &amp; Johnson, K. (2019, June 26). 4.2 visualizations for Numeric Data: Exploring train ridership data ... Feature Engineering and Selection: A Practical Approach for Predictive Models. https://bookdown.org/max/FES/visualizations-for-numeric-data-exploring-train-ridership-data.html 
