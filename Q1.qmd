@@ -40,8 +40,7 @@ ggplot(v, aes(
   size = Count
 )) +
   geom_point() + 
-  geom_abline(intercept = 0, slope = 1, color = "steelblue", linetype = "solid") +
-  labs(x = "Viewport Width (pixels)", y = "Viewport Height (pixels)", size = "Count")
+  geom_abline(intercept = 0, slope = 1, color = "steelblue")
 ```
 
 
@@ -59,8 +58,7 @@ e. Show the aspect ratio as a density plot, where the x axis labels correspond t
 
 ```{r}
 ggplot(v,
-       aes(x = aspect_ratio,
-           y = Count)) +
+       aes(x = aspect_ratio)) +
   geom_density()
 ```
 

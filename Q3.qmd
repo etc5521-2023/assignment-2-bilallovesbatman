@@ -1,6 +1,6 @@
 ---
 title: "Q3"
-author: "YOUR NAME HERE"
+author: "Bilal Raja"
 format: html
 ---
 
@@ -10,8 +10,67 @@ The World Health Organisation (WHO) routinely reports statistics on tuberculosis
 
 The data and dictionary were downloaded from https://www.who.int/teams/global-tuberculosis-programme/data. We have made them available in the template repo.
 
+```{r}
+library(tidyverse)
+tb <- read.csv("data/TB_notifications_2023-08-21.csv")
+```
+
 a. How many countries are recorded?
+
+```{r}
+unique(tb$country)
+```
+
+There are 217 countries recorded.
+
 b. What is the earliest and latest years in the data?
+
+```{r}
+tb_date_sort <- tb |>
+  arrange(year)
+
+head(tb_date_sort)
+tail(tb_date_sort)
+```
+
+The earliest year in the data is 1980 while the latest is 2021.
+
 c. There are numerous ways that TB is detected, and this is reflected in the data as `new_sp`, `new_sn`, `new_su`, `new_ep` and `new_oth`. Create a new variable which sums these values for each year, for each country. Make an appropriate plot to show the counts for Australia over time. Describe the pattern, and try to explain it, which might require searching for more information about TB reporting.
+
+```{r}
+tb_sum <- tb |>
+  mutate(new_sum = new_sp + new_sn + new_su + new_ep + new_oth)
+
+tb_sum_aus <- tb_sum |>
+  filter(country == 'Australia') |>
+  filter(!is.na(new_sum))
+```
+
+```{r}
+ggplot(tb_sum_aus, aes(
+  x = year,
+  y = new_sum
+)) +
+  geom_col()
+```
+
+
 d. Subset the data to Australia and five of it's nearest neighbours (Fiji, Indonesia, New Zealand, Papua New Guinea, and East Timor). Make an appropriate plot to compare the incidence across countries. 
+
+```{r}
+tb_aus_neighb <- tb_sum |>
+  filter(country %in% c('Australia', 'Fiji', 'Indonesia', 'New Zealand', 'Papua New Guinea', 'Timor-Leste')) |>
+  select(country, year, new_sum)
+```
+
+```{r}
+ggplot(tb_aus_neighb, aes(
+  x = year,
+  y = new_sum,
+  fill = country
+)) +
+  geom_col()
+```
+
+
 e. What is wrong with directly comparing the incidence? What information is missing in order to make the comparison. Without adding new data, come up with a transformation of counts that will fix the problem. Make a new plot, and describe how TB is occurring similarly or differently in Australia and it's nearest neighbours.

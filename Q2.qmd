@@ -41,11 +41,52 @@ I expect no strong relationship between run time and rating.
 c. Make a bar chart of the genre key words (`adventure` to `western`), and summarise the distribution.
 
 ```{r}
-movies_c <- movies_2023 |>
+library(ggplot2)
+
+genres_pivot <- movies_2023 |>
+  pivot_longer(cols = adventure:western, names_to = "genres_long", values_to = "count") |>
+  group_by(genres_long) |>
+  summarise(count = sum(count))
+
+ggplot(genres_pivot, aes(
+  x = genres_long,
+  y = count
+)) +
+  geom_col(fill = "steelblue") +
+  labs(
+    title = "Genre Distribution of 2023 Movies",
+    x = "Genre",
+    y = "Count"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
   
 ```
 
+**SUMMARIZE THE PLOT HERE**
 
 d. Plot the average rating by genre, in the best way that you can. Describe the distribution, and what you learn about ratings and genre.
+
+```{r}
+genre_avratings <- movies_2023 |>
+  select(genres, averageRating) |>
+  separate_rows(genres, sep = ',') |>
+  group_by(genres) |>
+  summarise(avg_rating = round(mean(averageRating), 2))
+
+ggplot(genre_avratings, aes(
+  x = reorder(genres, -avg_rating),
+  y = avg_rating
+)) +
+  geom_col(fill = "steelblue") +
+   labs(
+    title = "Genre Ratings of 2023 Movies",
+    x = "Genre",
+    y = "Average Rating"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+**SUMMARIZE THE PLOT HERE**
+
 e. Plot ratings and number of votes, being careful as to which axis each should be plotted on. Summarise the distribution and what you learn.
 f. Make appropriate plots to explore the relationship of run time against ratings. 
