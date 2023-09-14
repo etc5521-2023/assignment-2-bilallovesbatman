@@ -19,7 +19,7 @@ tb_dictionary <- read.csv("data/TB_data_dictionary_2023-08-21.csv")
 ## a. How many countries are recorded?
 
 ```{r}
-unique(tb$country)
+glimpse(unique(tb$country))
 ```
 
 There are 217 countries recorded.
@@ -30,8 +30,8 @@ There are 217 countries recorded.
 tb_date_sort <- tb |>
   arrange(year)
 
-head(tb_date_sort)
-tail(tb_date_sort)
+min(tb_date_sort$year)
+max(tb_date_sort$year)
 ```
 
 The earliest year in the data is 1980 while the latest is 2021.
