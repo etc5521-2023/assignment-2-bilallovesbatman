@@ -147,4 +147,75 @@ Make sure to execute the code after loading the necessary libraries and creating
 
 ANALYSIS: ChatGPT helped me to arrange 3 plots together.
 
+# Q3
 
+## Part d
+
+ME: 
+```
+ggplot(tb_aus_neighb, aes(
+  x = year,
+  y = total_detected,
+  color = country
+)) +
+  geom_line()
+```
+I want my y axis to show as complete numbers, not 3e +05
+
+AI: If you want to display the y-axis labels as complete numbers (without scientific notation) in your ggplot, you can use the scale_y_continuous function and specify the labels argument to format the labels as integers. Here's how you can modify your ggplot code:
+
+```
+library(ggplot2)
+
+ggplot(tb_aus_neighb, aes(
+  x = year,
+  y = total_detected,
+  color = country
+)) +
+  geom_line() +
+  scale_y_continuous(labels = scales::comma)  # Use comma formatting for labels
+
+```
+
+In this code, we use scale_y_continuous and scales::comma to format the y-axis labels as complete numbers with commas for better readability. This will display the y-axis labels in standard integer format rather than in scientific notation.
+
+-------
+
+ANALYSIS: ChatGPT helped me to display y axis in standard form.
+
+## Part e
+
+ME: How do i use a previous value from a data? For example, to perform percentage change
+
+AI: To use a previous value from a data frame column or vector in R, you can utilize the lag function from the dplyr package, which allows you to access the previous value of a variable. You can then use this previous value to perform calculations like calculating percentage changes between consecutive values.
+
+Here's how you can use lag to calculate percentage changes in a data frame:
+
+```
+library(dplyr)
+
+# Sample data frame with a variable 'value' representing the values over time
+df <- data.frame(year = 1:5, value = c(10, 15, 20, 25, 30))
+
+# Calculate percentage change using lag
+df <- df %>%
+  mutate(prev_value = lag(value),  # Create a new column for the previous value
+         percentage_change = (value - prev_value) / prev_value * 100)
+
+# View the resulting data frame
+print(df)
+```
+
+In this code:
+
+We create a sample data frame named df with a variable value representing values over time.
+
+We use mutate to create a new column named prev_value where we store the previous value of value using lag.
+
+We calculate the percentage change by subtracting the previous value from the current value, dividing by the previous value, and then multiplying by 100 to get the percentage change.
+
+By using lag in this way, you can access the previous value and perform various calculations, including percentage changes, differences, or any other operations that involve comparing current values with their previous counterparts.
+
+-------
+
+ANALYSIS: ChatGPT helped me to calculate percentage change in R effeciently.
