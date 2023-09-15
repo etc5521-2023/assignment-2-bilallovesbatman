@@ -1,6 +1,6 @@
 ---
 title: "Q5"
-author: "YOUR NAME HERE"
+author: "BILAL RAJA"
 format: html
 ---
 
@@ -8,28 +8,40 @@ format: html
 
 For each of the following code fragments, write down was a potentially useful null hypothesis and null generating mechanism would be.
 
-a. `cl` is categorical and `x1` is numeric.
+## a. `cl` is categorical and `x1` is numeric.
 
 ```
 ggplot(data) + 
   geom_boxplot(aes(x=cl, y=x1))
 ```
 
-b. `temp` is the temperature of stars and is thought to have a skewed distribution.
+**Null**: The means across all categories in `cl` are not significantly different from each other.
+
+**Mechanism**: Using the `nullabor` package, produce a lineup of 20 box plots for `data` by permutation.
+
+## b. `temp` is the temperature of stars and is thought to have a skewed distribution.
 
 ```
 ggplot(stars, aes(temp)) +
   geom_histogram()
 ```
 
-c. `rooms` is an integer variable, `perc` is a percentage (or count/frequency), `miss` is a logical variable indicating the value was missing or not. 
+**Null**: The distribution of `temp` negatively skewed.
+
+**Mechanism**: Since we are dealing with histograms (distributions), it is best to generate 20 random samples of `temp`.
+
+## c. `rooms` is an integer variable, `perc` is a percentage (or count/frequency), `miss` is a logical variable indicating the value was missing or not. 
 
 ```
 ggplot(housing, aes(x=rooms, y=perc, fill = miss)) +
   geom_col(position = "dodge")
 ```
 
-d. `height` and `weight` are quantitative variables, `sport` is categorical.
+**Null**: The frequency of rooms follows a normal distribution.
+
+**Mechanism**: Using the `nullabor` package, produce a lineup of 20 column plots for `housing` by permutation.
+
+## d. `height` and `weight` are quantitative variables, `sport` is categorical.
 
 ```
 ggplot(olympics, aes(x = height, 
@@ -39,6 +51,10 @@ ggplot(olympics, aes(x = height,
   geom_smooth(method = "lm", se = FALSE)
 ```
 
+**Null**: There is no strong relationship between weight and height within a sport.
+
+**Mechanism**: Using the `nullabor` package, produce a lineup of 20 linear models for `olympics` by permuting the values of `height` and `weight` within each `sport`.
+
 e. `.resid` are residuals from a linear model fit.
 
 ```
@@ -46,3 +62,7 @@ ggplot(housing, aes(sample = .resid)) +
     geom_qq() +
     geom_qq_line() 
 ```
+
+**Null**: The residuals `.resid` follow a trend or a pattern.
+
+**Mechanism**: Using the `nullabor` package, produce a random lineup of 20 qq plots for `housing` by permutation.

@@ -219,3 +219,45 @@ By using lag in this way, you can access the previous value and perform various 
 -------
 
 ANALYSIS: ChatGPT helped me to calculate percentage change in R effeciently.
+
+# Q4
+
+## Part b
+
+ME: This is my code:
+
+```
+kable(shots_summary, "html") %>%
+  kable_material(full_width = TRUE, position = "left") %>%
+  row_spec(which(shots_summary$possession_team.name == "Australia"), background = "orange", bold = TRUE, color = "white") %>%
+  row_spec(which(shots_summary$possession_team.name == "Brazil"), background = "darkgreen", bold = TRUE, color = "white")
+```
+
+How do I change the column names. Also, tell me when font colour would suit a text with orange and dark green background
+
+AI: To change the column names in a table created using kable, you can use the col.names argument in the kable function to specify the new column names. Here's how to do it:
+
+```
+# Define new column names
+new_column_names <- c("Player Name", "Total Shots")
+
+# Create a table with customized column names
+my_table <- kable(shots_summary, "html", col.names = new_column_names) %>%
+  kable_material(full_width = TRUE, position = "left") %>%
+  row_spec(which(shots_summary$possession_team.name == "Australia"), background = "orange", bold = TRUE, color = "white") %>%
+  row_spec(which(shots_summary$possession_team.name == "Brazil"), background = "darkgreen", bold = TRUE, color = "white")
+
+# Print the table
+my_table
+
+```
+
+In this code, we define new_column_names as a character vector containing the new column names. Then, we pass col.names = new_column_names as an argument to kable to set the column names.
+
+Regarding font color that suits a text with orange and dark green backgrounds, you typically want to choose a font color that provides good contrast and readability. For an orange background, white or black text tends to work well, as both colors provide good contrast. Similarly, for a dark green background, white or light colors (e.g., light gray or yellow) are often suitable for font color.
+
+So, in your table, you've already chosen white font color for both orange and dark green backgrounds, which is a good choice for readability and contrast. If you find that white text is not visually appealing or readable, you can consider using a light gray or yellow font color for the dark green background to maintain good contrast. Ultimately, the choice of font color depends on your design preferences and the overall visual appearance you want to achieve.
+
+-------
+
+ANALYSIS: ChatGPT helped me to style my table better.
